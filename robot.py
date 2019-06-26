@@ -15,17 +15,17 @@ class Robot(wpilib.TimedRobot):
     def robotInit(self):
         # Create motors
         self.lf_motor = rev.CANSparkMax(4, rev.MotorType.kBrushless)
-        # self.lb_motor = rev.CANSparkMax(1, rev.MotorType.kBrushless)
-        # self.rf_motor = rev.CANSparkMax(2, rev.MotorType.kBrushless)
-        # self.rb_motor = rev.CANSparkMax(3, rev.MotorType.kBrushless)
+        self.lb_motor = rev.CANSparkMax(1, rev.MotorType.kBrushless)
+        self.rf_motor = rev.CANSparkMax(2, rev.MotorType.kBrushless)
+        self.rb_motor = rev.CANSparkMax(3, rev.MotorType.kBrushless)
 
         # You must call getPIDController() on an existing CANSparkMax or
         # SparkMax object to fully use PID functionality
-        self.l_pidController = self.lf_motor.getPIDController()
+        # self.l_pidController = self.lf_motor.getPIDController()
         # self.r_pidController = self.rf_motor.getPIDController()
 
         # Instantiate built-in encoder to display position
-        self.l_encoder = self.lf_motor.getEncoder()
+        # self.l_encoder = self.lf_motor.getEncoder()
         # self.r_encoder = self.rf_motor.getEncoder()
 
         self.joystick = wpilib.Joystick(0)
@@ -44,13 +44,13 @@ class Robot(wpilib.TimedRobot):
         # between power cycles
 
         # Set PID Coefficents
-        self.l_pidController.setP(self.coeff["p"])
-        self.l_pidController.setI(self.coeff["i"])
-        self.l_pidController.setD(self.coeff["d"])
-        self.l_pidController.setIZone(self.coeff["iz"])
-        self.l_pidController.setFF(self.coeff["ff"])
-        self.l_pidController.setOutputRange(self.kMinOutput, self.kMaxOutput)
-        
+        # self.l_pidController.setP(self.coeff["p"])
+        # self.l_pidController.setI(self.coeff["i"])
+        # self.l_pidController.setD(self.coeff["d"])
+        # self.l_pidController.setIZone(self.coeff["iz"])
+        # self.l_pidController.setFF(self.coeff["ff"])
+        # self.l_pidController.setOutputRange(self.kMinOutput, self.kMaxOutput)
+
         # self.r_pidController.setP(self.coeff["p"])
         # self.r_pidController.setI(self.coeff["i"])
         # self.r_pidController.setD(self.coeff["d"])
@@ -81,23 +81,23 @@ class Robot(wpilib.TimedRobot):
 
         # Update PIDController datapoints with the latest from SmartDashboard
         if i != self.coeff["i"]:
-            self.l_pidController.setI(i)
+            # self.l_pidController.setI(i)
             self.kI = i
         if d != self.coeff["d"]:
-            self.l_pidController.setD(d)
+            # self.l_pidController.setD(d)
             self.kD = d
         if iz != self.coeff["iz"]:
-            self.l_pidController.setIZone(iz)
+            # self.l_pidController.setIZone(iz)
             self.kIz = iz
         if ff != self.coeff["ff"]:
-            self.l_pidController.setFF(ff)
+            # self.l_pidController.setFF(ff)
             self.kFF = ff
         if (min_out != self.kMinOutput) or (max_out != self.kMaxOutput):
-            self.l_pidController.setOutputRange(min_out, max_out)
+            # self.l_pidController.setOutputRange(min_out, max_out)
             self.kMinOutput = min_out
             self.kMaxOutput = max_out
 
-        self.setpoint = self.maxRPM * self.joystick.getY()
+        self.setpoint = self.joystick.getY()
         # PIDController objects are commanded to a set point using the
         # setReference() method.
         #
@@ -113,12 +113,13 @@ class Robot(wpilib.TimedRobot):
         #
         # For more information on what these types are, refer to the Spark Max
         # documentation.
-        self.l_pidController.setReference(self.setpoint, rev.ControlType.kVelocity)
+        # self.l_pidController.setReference(self.setpoint, rev.ControlType.kVelocity)
         # self.r_pidController.setReference(self.setpoint, rev.ControlType.kVelocity)
-
+        self.lf_motor.set(self.setpoint)
+        self.rf_motor.set(self.setpoint)
         # Push Setpoint and the motor's current position to SmartDashboard.
         wpilib.SmartDashboard.putNumber("Setpoint", self.setpoint)
-        wpilib.SmartDashboard.putNumber("Process Variable", self.l_encoder.getPosition())
+        # wpilib.SmartDashboard.putNumber("Process Variable", self.l_encoder.getPosition())
 
 
 if __name__ == "__main__":
